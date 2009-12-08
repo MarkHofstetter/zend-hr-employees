@@ -1,0 +1,20 @@
+<!-- application/views/scripts/hr/index.phtml -->
+
+<p><a href="<?php echo $this->url(
+    array(
+        'controller' => 'hr',
+        'action'     => 'AddEmployee'
+    ), 
+    'default', 
+    true) ?>">Add Employee</a></p>
+
+
+Employees: <br />
+<dl>
+    <?php foreach ($this->entries as $entry): ?>
+    <?php echo $this->escape($entry->first_name) ?>
+    <?php echo $this->escape($entry->last_name) ?>
+    <?php echo $this->escape($entry->salary) ?>
+    <br>
+	<?php endforeach ?>	
+</dl>
