@@ -16,6 +16,7 @@ class Default_Model_Employee
     protected $_first_name;
     protected $_last_name;
     protected $_salary;
+    protected $_department_name;
     protected $_id;
     protected $_mapper;
 
@@ -87,6 +88,17 @@ class Default_Model_Employee
     public function getSalary()
     {
         return $this->_salary;
+    }
+    
+    public function setDepartment_Name($text)
+    {
+        $this->_department_name = $text;
+        return $this;
+    }
+
+    public function getDepartment_Name()
+    {
+        return $this->_department_name;
     }
 
     public function setId($id)

@@ -20,8 +20,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
        
         $db = Zend_Db::factory('oracle', $params);
         Zend_Db_Table_Abstract::setDefaultAdapter($db);
+        Zend_Registry::Set('db', $db);
 
-
+        
         $autoloader = new Zend_Application_Module_Autoloader(array(
             'namespace' => 'Default',
             'basePath'  => dirname(__FILE__),

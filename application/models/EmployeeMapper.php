@@ -37,12 +37,14 @@ class Default_Model_EmployeeMapper
 		
 		print_r($data);
 
-        if (null === ($id = $employee->getId())) {
+       # if (null === ($id = $employee->getId())) {
             unset($data['id']);
             $this->getDbTable()->insert($data);
-        } else {
-            $this->getDbTable()->update($data, array('id = ?' => $id));
-        }
+       $db = Zend_Registry::Get('db');
+       $db->commit();
+       # } else {
+       #     $this->getDbTable()->update($data, array('id = ?' => $id));
+       # }
     }
 /*
     public function find($id, Default_Model_Guestbook $guestbook)
@@ -60,8 +62,22 @@ class Default_Model_EmployeeMapper
 */
     public function fetchAll()
     {
-        $resultSet = $this->getDbTable()->fetchAll();
         $entries   = array();
+        $db = Zend_Registry::Get('db');
+        $sql = sprintf("select first_name, last_name, salary, department_name from 
+                       emp e, departments d where e.department_id = d.department_id order by employee_id desc");
+        $stmt = $db->query($sql);
+        $stmt->execute();
+        while($row = $stmt->fetch()) {
+          $e = new Default_Model_Employee();
+          $e->setFirst_Name($row['FIRST_NAME']);
+          $e->setLast_Name($row['LAST_NAME']);
+          $e->setSalary($row['SALARY']);
+          $e->setDepartment_Name($row['DEPARTMENT_NAME']);
+          $entries[] = $e;
+        }
+        /*
+        $row = $stmt->fetch()
         foreach ($resultSet as $row) {
             $entry = new Default_Model_Employee();
             $entry ->setId($row->EMPLOYEE_ID)
@@ -70,7 +86,9 @@ class Default_Model_EmployeeMapper
                   ->setSalary($row->SALARY)
                   ->setMapper($this);
             $entries[] = $entry;
-        }
+        }*/
+        
+        
         return $entries;
     }
 }
