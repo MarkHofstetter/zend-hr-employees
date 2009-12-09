@@ -2,17 +2,10 @@
 -- Generated 09.12.2009 14:41:17 from HR@ORCL
 
 CREATE TABLE emp
-    (employee_id,
-    first_name,
-    last_name,
-    salary,
-    bonus,
-    department_id)
 as select employee_id,
     first_name,
     last_name,
     salary,
-    bonus,
     department_id
     from employees;
 
@@ -58,64 +51,6 @@ USING INDEX
 
 -- Triggers for EMP
 
-CREATE OR REPLACE TRIGGER check_sum_salary
- BEFORE
-  INSERT OR UPDATE
- ON emp
-REFERENCING NEW AS NEW OLD AS OLD
-declare
-  summe number;
-  e exception;
-  pragma exception_init
-    (e, -20001);
-  max_summe number;
-begin
-  max_summe := pck_parameters.get_n('max_emp_salary');
-  select sum(salary) into summe from emp;
-  if summe > max_summe then
-     raise_application_error(-20001, 'Summe zu hoch '||summe||'>'||max_summe );
-  end if;
-end;
-/
-
-CREATE OR REPLACE TRIGGER emp_jn_trg
- BEFORE
-  INSERT OR DELETE OR UPDATE
- ON emp
-REFERENCING NEW AS NEW OLD AS OLD
- FOR EACH ROW
-declare
-  v_type varchar2(2);
-begin
-
-v_type := (case when inserting then 'I'
-                when updating  then 'U'
-                else                'D'
-           end);
-           
-insert into emp_jn (
-EMP_JN_ID,
-EMPLOYEE_ID,
-FIRST_NAME,
-LAST_NAME,
-SALARY,
-SALARY_OLD,
-BONUS,
-CHANGE_DATE,
-CHANGE_TYPE)
-values (
-hr_seq.nextval,
-nvl(:old.employee_id, :new.employee_id),
-nvl(:old.FIRST_NAME,  :new.first_name),
-nvl(:old.last_NAME,  :new.last_name),
-nvl(:new.salary, null),
-nvl(:old.salary, null),
-nvl(:old.bonus,  :new.bonus),
-sysdate,
-v_type);
-
-end;
-/
 
 CREATE OR REPLACE TRIGGER insert_trg
  BEFORE
