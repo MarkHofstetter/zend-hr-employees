@@ -28,8 +28,27 @@ class Default_Form_Employee extends Zend_Form
             'required'   => true,
             'filters'    => array('StringTrim'), 
             )			
-        );		
+        );	
         
+        $this->addElement('text', 'department_name', array(
+            'label'      => 'Department Name:',
+            'required'   => true,
+            'filters'    => array('StringTrim'), 
+            )			
+        );			
+        
+        
+        $element = new Zend_Form_Element_Select('foo', array(
+          'multiOptions' => array(
+          'foo' => 'Foo Option',
+          'bar' => 'Bar Option',
+          'baz' => 'Baz Option',
+          'bat' => 'Bat Option',
+            )
+         ));
+         $element->setValue(array('bar'));
+        
+        $this->addElement($element);
         // Add the submit button
         $this->addElement('submit', 'submit', array(
             'ignore'   => true,

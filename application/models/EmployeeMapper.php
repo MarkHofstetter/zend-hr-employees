@@ -26,6 +26,18 @@ class Default_Model_EmployeeMapper
         return $this->_dbTable;
     }
 
+    private function getDepartmentIdByName($department_name) {
+      $db = Zend_Registry::Get('db');
+      $sql = sprintf("select department_id from 
+                       departments where department_name = :department_name");
+                       
+      # $stmt = new Zend_Db_Statement_Oracle($db, $sql);
+      # array(':department_name' => $department_name)
+      $stmt = $db->query($sql, array(':department_name' => $department_name));
+      $stmt->execute();
+      $id = $stmt->fetchColumn(0);
+      return $id;
+    }
 
     public function save(Default_Model_Employee $employee)
     {
@@ -33,18 +45,19 @@ class Default_Model_EmployeeMapper
             'FIRST_NAME'   => $employee->getFirst_name(),
             'LAST_NAME'    => $employee->getLast_name(),
             'SALARY'       => $employee->getSalary(),
+            'DEPARTMENT_ID' =>  $this->getDepartmentIdByName($employee->getDepartment_name()),
         );
 		
 		print_r($data);
 
-       # if (null === ($id = $employee->getId())) {
+        if (null === ($id = $employee->getId())) {
             unset($data['id']);
             $this->getDbTable()->insert($data);
-       $db = Zend_Registry::Get('db');
-       $db->commit();
-       # } else {
-       #     $this->getDbTable()->update($data, array('id = ?' => $id));
-       # }
+       # $db = Zend_Registry::Get('db');
+       # $db->commit();
+        } else {
+            $this->getDbTable()->update($data, array('id = ?' => $id));
+       }
     }
 /*
     public function find($id, Default_Model_Guestbook $guestbook)
@@ -65,7 +78,7 @@ class Default_Model_EmployeeMapper
         $entries   = array();
         $db = Zend_Registry::Get('db');
         $sql = sprintf("select first_name, last_name, salary, department_name from 
-                       emp e, departments d where e.department_id = d.department_id order by employee_id desc");
+                       emp e, departments d where e.department_id = d.department_id(+) order by employee_id desc");
         $stmt = $db->query($sql);
         $stmt->execute();
         while($row = $stmt->fetch()) {

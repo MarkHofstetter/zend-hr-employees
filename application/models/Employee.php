@@ -90,13 +90,13 @@ class Default_Model_Employee
         return $this->_salary;
     }
     
-    public function setDepartment_Name($text)
+    public function setDepartment_name($text)
     {
         $this->_department_name = $text;
         return $this;
     }
 
-    public function getDepartment_Name()
+    public function getDepartment_name()
     {
         return $this->_department_name;
     }
