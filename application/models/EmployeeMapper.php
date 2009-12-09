@@ -60,7 +60,22 @@ class Default_Model_EmployeeMapper
 */
     public function fetchAll()
     {
-        $resultSet = $this->getDbTable()->fetchAll();
+	$entries   = array();
+	$db = Zend_Registry::Get('db');
+	$stmt = $db->query("select first_name, last_name, salary
+	            from emp order by employee_id desc");
+	  			
+    $stmt->execute();
+	while ($row = $stmt->fetch()) {
+	   $entry = new Default_Model_Employee();
+            $entry ->setId($row['EMPLOYEE_ID'])
+                  ->setFirst_Name($row['FIRST_NAME'])
+                  ->setLast_Name($row['LAST_NAME'])
+                  ->setSalary($row['SALARY']);                 
+            $entries[] = $entry;
+    }  			
+        
+		/*$resultSet = $this->getDbTable()->fetchAll();
         $entries   = array();
         foreach ($resultSet as $row) {
             $entry = new Default_Model_Employee();
@@ -71,6 +86,7 @@ class Default_Model_EmployeeMapper
                   ->setMapper($this);
             $entries[] = $entry;
         }
+		*/
         return $entries;
     }
 }
